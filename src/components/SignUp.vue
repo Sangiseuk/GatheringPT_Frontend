@@ -5,13 +5,13 @@
         <!--본문-->
         <v-img max-width="900" :aspect-ratio="4 / 3" :src="loginImg" class="loginImg"></v-img>
         <div class="loginFormDiv">
-          <!-- 로그인 폼 내용 -->
+          <!-- 회원가입 폼 내용 -->
           <v-row class="my-2" align="center">
             <v-img max-width="900" :aspect-ratio="4 / 3" :src="loginImg" class="loginImgSmall transx"></v-img>
-            <h1 class="font-weight-bold mx-2">LOG IN</h1>
+            <h1 class="font-weight-bold mx-2">SIGN UP</h1>
             <v-img max-width="900" :aspect-ratio="4 / 3" :src="loginImg" class="loginImgSmall"></v-img>
           </v-row>
-          <p class="mb-3">이메일과 비밀번호를 입력해주세요.</p>
+          <p class="mb-3">채집PT에 오신것을 환영합니다.</p>
 
           <v-text-field width="90%" label="email" v-model="user.email" variant="outlined"
             density="compact"></v-text-field>
