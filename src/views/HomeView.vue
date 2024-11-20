@@ -1,7 +1,7 @@
 <script setup>
 import NavBar from '@/components/NavBar.vue';
+import PlayButtons from '@/components/main/PlayButtons.vue';
 // import ExplainService from '@/main/components/ExplainService.vue';
-// import PlayButtons from '@/main/components/PlayButtons.vue';
 </script>
 
 <template>
@@ -9,8 +9,10 @@ import NavBar from '@/components/NavBar.vue';
     <NavBar></NavBar>
     <!-- <v-main> -->
     <v-container>
-      <v-row></v-row>
-      <v-row></v-row>
+      <v-row>
+        <PlayButtons></PlayButtons>
+      </v-row>
+
 
     </v-container>
     <p>main입니다.</p>
