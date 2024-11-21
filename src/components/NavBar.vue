@@ -12,7 +12,7 @@ const goToLoginForm = () => {
 
 // 회원가입 폼으로 이동하는 함수 
 const showSignupForm = () => {
-    router.push('/signup');
+    router.push('/signUp');
 };
 
 // 로그아웃 처리 함수
@@ -23,16 +23,16 @@ const logout = () => {
 </script>
 
 <template>
-    <v-app-bar class="nav-bar">
+    <v-app-bar class="nav-bar" elevation="0">
         <v-spacer></v-spacer>
         <!-- 회원가입 버튼 -->
         <v-btn class="signup-btn mx-1" v-if="!isLoggedIn" @click="showSignupForm">
-            <p class="font-weight-bold">회원가입</p>
+            회원가입
         </v-btn>
 
         <!-- 로그인 버튼 -->
         <v-btn class="login-btn mx-1" v-if="!isLoggedIn" @click="goToLoginForm">
-            <p class="font-weight-bold">로그인</p>
+            로그인
         </v-btn>
 
         <!-- 로그아웃 버튼 -->
@@ -77,5 +77,22 @@ const logout = () => {
     font-weight: bold;
     text-align: center;
     justify-content: center;
+}
+
+@media (max-width: 600px) {
+    .nav-bar {
+        height: 50px;
+    }
+
+    .login-btn,
+    .signup-btn,
+    .logout-btn {
+        font-size: 11px;
+        padding: 4px 8px;
+        border-radius: 20px;
+        height: 3vh;
+        justify-content: center;
+        margin-top: -10px;
+    }
 }
 </style>

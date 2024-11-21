@@ -18,6 +18,19 @@ const router = createRouter({
       name: "signUp",
       component: () => import("@/components/SignUp.vue"),
     },
+    {
+      path: "/joinGame",
+      name: "joinGame",
+      component: () => import("@/views/JoinGameView.vue"),
+      children: [
+        {
+          path: "",
+          name: "gamePin",
+          component:() => import("@/components/game/GamePinView.vue")
+
+        }
+      ]
+    },
   ],
 });
 
