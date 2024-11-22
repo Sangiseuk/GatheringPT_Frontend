@@ -26,7 +26,7 @@
           <div class="divider mt-2 mb-2">
             <v-divider>Or</v-divider>
             계정이 없으신가요?
-            <span class="pink" @click="goToSignUp">회원가입</span>
+            <span class="signUpText" @click="showSignupForm">회원가입</span>
           </div>
         </div>
       </div>
@@ -47,6 +47,10 @@ const user = ref({
   email: "",
   password: "",
 });
+
+const showSignupForm = () => {
+    router.push('/signUp');
+};
 </script>
 
 <style scoped>
@@ -103,6 +107,12 @@ const user = ref({
   object-fit: contain;
   /* 이미지가 비율에 맞게 잘리도록 설정 */
   margin-top: 10px;
+}
+
+.signUpText{
+  color: #795013;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 /* 핸드폰처럼 긴 화면에서 이미지가 위로 가게 하기 위한 미디어 쿼리 */

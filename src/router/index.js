@@ -14,7 +14,7 @@ const router = createRouter({
       component: () => import("@/components/login.vue"),
     },
     {
-      path: "/signUp",
+      path: "/sign-up",
       name: "signUp",
       component: () => import("@/components/SignUp.vue"),
     },
@@ -26,10 +26,14 @@ const router = createRouter({
         {
           path: "",
           name: "gamePin",
-          component:() => import("@/components/game/GamePinView.vue")
-
-        }
-      ]
+          component: () => import("@/components/game/GamePinView.vue"),
+        },
+        {
+          path: "",
+          name: "nickname",
+          component: () => import("@/components/game/NicknameView.vue"),
+        },
+      ],
     },
   ],
 });
