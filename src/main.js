@@ -7,6 +7,8 @@ import router from "./router";
 
 const app = createApp(App);
 
+window.global = window;
+
 app.use(vuetify);
 app.use(createPinia());
 app.use(router);
