@@ -23,6 +23,16 @@ const router = createRouter({
 		name: "game",
 		component: () => import("@/components/Game.vue"),
 	},
+	{
+		path: "/operatorConsole",
+		name: "operatorConsole",
+		component: () => import("@/components/OperatorConsole.vue"),
+	},
+	{
+		path: "/participantConsole",
+		name: "participantConsole",
+		component: () => import("@/components/ParticipantConsole.vue"),
+	},
   ],
 });
 
