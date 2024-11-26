@@ -1,22 +1,28 @@
 <script setup>
 import NavBar from '@/components/NavBar.vue';
-// import ExplainService from '@/main/components/ExplainService.vue';
-// import PlayButtons from '@/main/components/PlayButtons.vue';
+import PlayButtons from '@/components/main/PlayButtons.vue';
+import ExplainService from '@/components/main/ExplainService.vue';
 </script>
 
 <template>
-  <v-app ref="app">
+  <v-app>
     <NavBar></NavBar>
-    <!-- <v-main> -->
-    <v-container>
-      <v-row></v-row>
-      <v-row></v-row>
 
-    </v-container>
-    <p>main입니다.</p>
+    <v-row no-gutters class="content-row">
+      <PlayButtons></PlayButtons>
+    </v-row>
+
+    <v-row no-gutters class="content-row">
+      <ExplainService></ExplainService>
+    </v-row>
+
     <router-view></router-view>
-    <!-- </v-main> -->
   </v-app>
 </template>
 
-<style scoped></style>
+<style scoped>
+.content-row {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+</style>

@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <v-card class="loginCard border-warning" border="double xl" variant="outlined">
-      <div class="loginDiv">
+    <v-card class="signUpCard border-warning" border="double xl" variant="outlined">
+      <div class="signUpDiv">
         <!--본문-->
         <v-img max-width="900" :aspect-ratio="4 / 3" :src="loginImg" class="loginImg"></v-img>
-        <div class="loginFormDiv">
+        <div class="signUpFormDiv">
           <!-- 회원가입 폼 내용 -->
           <v-row class="my-2" align="center">
             <v-img max-width="900" :aspect-ratio="4 / 3" :src="loginImg" class="loginImgSmall transx"></v-img>
@@ -20,13 +20,16 @@
             :append-inner-icon="visible ? 'mdi-eye-off' : 'mdi-eye'" :type="visible ? 'text' : 'password'"
             @click:append-inner="visible = !visible"></v-text-field>
 
-          <v-btn class="login-btn" @click="goToLogin" outlined>LOG IN</v-btn>
+            <v-text-field width="90%" label="Nickname" v-model="user.nickname" variant="outlined"
+            density="compact"></v-text-field>
+
+          <v-btn class="signup-btn" @click="goToLogin" outlined>SIGN UP</v-btn>
           <img class="kakao-login-btn" src="@/assets/kakao_login.png" @click="goToKakaoLogin" alt="Kakao Login"></img>
 
           <div class="divider mt-2 mb-2">
             <v-divider>Or</v-divider>
-            계정이 없으신가요?
-            <span class="pink" @click="goToSignUp">회원가입</span>
+            이미 계정이 있으신가요?
+            <span class="loginText" @click="goToLoginForm">로그인</span>
           </div>
         </div>
       </div>
@@ -47,6 +50,10 @@ const user = ref({
   email: "",
   password: "",
 });
+
+const goToLoginForm = () => {
+    router.push('/login');
+};
 </script>
 
 <style scoped>
@@ -62,7 +69,7 @@ const user = ref({
 }
 
 /* 카드 스타일 */
-.loginCard {
+.signUpCard {
   width: 600px;
   padding: 2em;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -70,25 +77,22 @@ const user = ref({
   border: #d69533;
 }
 
-/* 로그인 폼 스타일 */
-.loginDiv {
+.signUpDiv {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
   justify-content: center;
   grid-gap: 1rem;
-  /* 이미지와 폼 사이 간격을 설정 */
 }
 
-/* 로그인 폼 내용 */
-.loginFormDiv {
+.signUpFormDiv {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
-.login-btn {
+.signup-btn {
   background-color: #795013;
   color: white;
   width: 100%;
@@ -105,9 +109,15 @@ const user = ref({
   margin-top: 10px;
 }
 
+.loginText{
+  color: #795013;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 /* 핸드폰처럼 긴 화면에서 이미지가 위로 가게 하기 위한 미디어 쿼리 */
 @media (max-width: 768px) {
-  .loginDiv {
+  .signUpDiv {
     display: flex;
     flex-direction: column;
     /* 모바일 화면에서는 세로로 배치 */
@@ -129,13 +139,13 @@ const user = ref({
   }
 
   /* 로그인 카드의 크기를 줄여서 모바일에서 더 잘 보이게 함 */
-  .loginCard {
+  .signUpCard {
     width: 90%;
     padding: 1.5em;
   }
 
   /* 이미지 스타일: 모바일에서 이미지가 위로 오도록 */
-  .loginDiv v-img {
+  .signUpDiv v-img {
     width: 100%;
     max-width: none;
     /* 최대 너비 제거 */
