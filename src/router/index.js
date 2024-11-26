@@ -35,6 +35,20 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path: "/create-game",
+      name: "createGame",
+      component: () => import("@/views/CreateGameView.vue"),
+      children: [
+        {
+          path: 'define-scope',
+          name: 'DefineScope',
+          component: () => import('@/components/template/DefineScope.vue'),
+        },
+        
+      ],
+    },
+    
   ],
 });
 
