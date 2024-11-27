@@ -33,22 +33,63 @@ const router = createRouter({
           name: "nickname",
           component: () => import("@/components/game/NicknameView.vue"),
         },
+        {
+          path: "waiting",
+          name: "waiting",
+          component: () => import("@/components/game/GameWaitingView.vue"),
+        },
       ],
     },
     {
       path: "/create-game",
       name: "createGame",
       component: () => import("@/views/CreateGameView.vue"),
-      children: [
-        {
-          path: 'define-scope',
-          name: 'DefineScope',
-          component: () => import('@/components/template/DefineScope.vue'),
-        },
-        
-      ],
     },
-    
+    {
+      path: "/create-marker",
+      name: "createMarker",
+      component: () => import("@/views/CreateMarkerView.vue"),
+    },
+    {
+      path: "/create-setting",
+      name: "createSetting",
+      component: () => import("@/views/CreateSettingView.vue"),
+    },
+    {
+      path: "/game-template-list",
+      name: "gametemplatelist",
+      component: () => import("@/views/GameTemplateListView.vue"),
+    },
+    {
+      path: "/game-detail",
+      name: "gamedetail",
+      component: () => import("@/views/GameDetailView.vue"),
+    },
+    {
+      path: "/game",
+      name: "game",
+      component: () => import("@/views/GameView.vue"),
+    },
+    {
+      path: "/result",
+      name: "result",
+      component: () => import("@/views/ResultView.vue"),
+    },
+    {
+      path: "/operator",
+      name: "operator",
+      component: () => import("@/views/OperatorView.vue"),
+    },
+    {
+      path: "/end-game",
+      name: "end-game",
+      component: () => import("@/views/EndGameListView.vue"),
+    },
+    {
+      path: "/end-game-result",
+      name: "end-game-result",
+      component: () => import("@/views/EndGameResultView.vue"),
+    },
   ],
 });
 

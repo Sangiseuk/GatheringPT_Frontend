@@ -1,198 +1,177 @@
 <template>
-    <v-container fluid class="create-game-container">
-        <h2>게임 템플릿 생성</h2>
+  <v-container fluid class="create-game-container">
+    <!-- 제목 -->
+    <v-row>
+      <v-col cols="12" class="d-flex justify-center">
+        <h1 class="title">게임 범위 설정</h1>
+      </v-col>
+    </v-row>
 
-        <!-- Step 1: 범위 유형 선택 -->
-        <section>
-            <h3>1. 범위 유형 선택</h3>
-            <v-row justify="center" class="my-4">
-                <v-chip v-for="option in rangeOptions" :key="option.value" outlined color="primary" class="mx-2"
-                    @click="selectRange(option.value)" :class="{ 'active-chip': selectedRange === option.value }">
-                    {{ option.label }}
-                </v-chip>
-            </v-row>
-        </section>
+    <!-- 지도 -->
+    <v-row>
+      <v-col cols="12">
+        <div id="map" class="map-container"></div>
+      </v-col>
+    </v-row>
 
-        <!-- Step 2: 범위 설정 -->
-        <section>
-            <h3>2. 범위 설정</h3>
-            <p>선택한 유형: {{ selectedRange }}</p>
-            <div id="map" class="map"></div>
-            <v-btn v-if="selectedShape" color="primary" class="mt-4" @click="saveShape">범위 저장</v-btn>
-        </section>
+    <!-- 범위 선택 버튼 -->
+    <v-row class="setting-row">
+      <v-col cols="4">
+        <v-btn @click="setDrawingMode('rectangle')" color="#795013" outlined
+          >사각형 그리기</v-btn
+        >
+      </v-col>
+      <v-col cols="4">
+        <v-btn @click="setDrawingMode('circle')" color="#795013" outlined
+          >원 그리기</v-btn
+        >
+      </v-col>
+      <v-col cols="4">
+        <v-btn @click="setDrawingMode('polygon')" color="#795013" outlined
+          >다각형 그리기</v-btn
+        >
+      </v-col>
+    </v-row>
 
-        <!-- Step 3: 마커 추가 -->
-        <section>
-            <h3>3. 마커 추가 및 설정</h3>
-            <v-btn @click="addMarker" color="primary" outlined>Add Marker</v-btn>
-            <v-row>
-                <v-col v-for="(marker, index) in markers" :key="index" cols="12">
-                    <v-card class="my-2">
-                        <v-card-title>
-                            Marker {{ index + 1 }}
-                            <v-chip-group v-model="marker.type" active-class="selected-chip">
-                                <v-chip value="treasure" outlined>보물</v-chip>
-                                <v-chip value="event" outlined>이벤트</v-chip>
-                            </v-chip-group>
-                        </v-card-title>
-                        <v-card-text>
-                            <v-text-field v-model="marker.contentText" label="마커 내용" outlined
-                                class="mb-2"></v-text-field>
-                            <v-switch v-model="marker.isVisible" label="공개 여부"></v-switch>
-                            <v-text-field v-model="marker.viewCount" label="열람 횟수" type="number"
-                                outlined></v-text-field>
-                        </v-card-text>
-                    </v-card>
-                </v-col>
-            </v-row>
-        </section>
-
-        <!-- Step 4: 게임 정보 입력 -->
-        <section>
-            <h3>4. 게임 정보 입력</h3>
-            <v-row>
-                <v-col cols="6">
-                    <v-text-field v-model="maxParticipants" label="최대 참여 인원" type="number" outlined></v-text-field>
-                </v-col>
-                <v-col cols="6">
-                    <v-text-field v-model="timeLimit" label="제한 시간 (분)" type="number" outlined></v-text-field>
-                </v-col>
-            </v-row>
-            <v-textarea v-model="announcement" label="게임 공지사항" rows="3" outlined></v-textarea>
-        </section>
-
-        <!-- Submit Button -->
-        <section class="mt-4">
-            <v-btn @click="createGame" color="success" block>게임 생성</v-btn>
-        </section>
-    </v-container>
+    <!-- 선택 완료 버튼 -->
+    <v-row>
+      <v-col cols="12" class="d-flex justify-center">
+        <v-btn @click="confirmSelection" color="#795013">범위 저장하기</v-btn>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
 
-const map = ref(null);
-const drawingManager = ref(null);
-const selectedRange = ref(null);
+// Emit 이벤트 정의
+const emit = defineEmits(["save-scope"]);
+
+// 지도와 DrawingManager 상태
+let map = null;
+let drawingManager = null;
 const selectedShape = ref(null);
-const markers = ref([]);
-const maxParticipants = ref(10);
-const timeLimit = ref(30);
-const announcement = ref("");
 
-const rangeOptions = [
-    { label: "사각형", value: "rectangle" },
-    { label: "다각형", value: "polygon" },
-    { label: "라인", value: "polyline" },
-];
+// 지도 초기화
+onMounted(() => {
+  map = new naver.maps.Map("map", {
+    center: new naver.maps.LatLng(37.5665, 126.978),
+    zoom: 13,
+  });
 
-const initializeMap = () => {
-    map.value = new naver.maps.Map("map", {
-        center: new naver.maps.LatLng(37.5665, 126.9780),
-        zoom: 13,
+  drawingManager = new naver.maps.drawing.DrawingManager({
+    map: map,
+    drawingControl: false,
+    rectangleOptions: {
+      fillColor: "#00FF00",
+      fillOpacity: 0.4,
+      strokeColor: "#00FF00",
+      strokeWeight: 2,
+    },
+    circleOptions: {
+      fillColor: "#FF0000",
+      fillOpacity: 0.4,
+      strokeColor: "#FF0000",
+      strokeWeight: 2,
+    },
+    polygonOptions: {
+      fillColor: "#0000FF",
+      fillOpacity: 0.4,
+      strokeColor: "#0000FF",
+      strokeWeight: 2,
+    },
+  });
 
-    });
-    naver.maps.Event.once(map, 'init', function () {
-        console.log('올바른 참조 시점', map.getOptions('minZoom') === 10);
-    });
-
-
-    drawingManager.value = new naver.maps.drawing.DrawingManager({
-        map: map.value,
-        drawingControl: true,
-        drawingControlOptions: {
-            position: naver.maps.Position.TOP_RIGHT,
-            style: naver.maps.drawing.DrawingStyle.VERTICAL,
-            drawingModes: [],
-        },
-        rectangleOptions: {
-            fillColor: "#FFD700",
-            fillOpacity: 0.5,
-            strokeColor: "#FF8C00",
-            strokeWeight: 3,
-        },
-        polygonOptions: {
-            fillColor: "#FFD700",
-            fillOpacity: 0.5,
-            strokeColor: "#FF8C00",
-            strokeWeight: 3,
-        },
-    });
-
-    drawingManager.value.addListener("rectangleAdded", (overlay) => {
-        selectedShape.value = overlay;
-        console.log("Rectangle Added:", overlay.getBounds());
-    });
-
-    drawingManager.value.addListener("polygonAdded", (overlay) => {
-        selectedShape.value = overlay;
-        console.log("Polygon Added:", overlay.getPaths());
-    });
-};
-
-const selectRange = (range) => {
-    selectedRange.value = range;
-    if (range === "rectangle") {
-        drawingManager.value.setOptions({ drawingModes: [naver.maps.drawing.DrawingMode.RECTANGLE] });
-    } else if (range === "polygon") {
-        drawingManager.value.setOptions({ drawingModes: [naver.maps.drawing.DrawingMode.POLYGON] });
-    } else if (range === "polyline") {
-        drawingManager.value.setOptions({ drawingModes: [naver.maps.drawing.DrawingMode.POLYLINE] });
+  // 드로잉 완료 이벤트
+  naver.maps.Event.addListener(drawingManager, "drawend", (overlay) => {
+    if (selectedShape.value) {
+      // 이전 도형 제거
+      selectedShape.value.setMap(null);
     }
+    selectedShape.value = overlay; // 새로 생성된 도형 저장
+    drawingManager.setDrawingMode(null); // 드로잉 모드 종료
+    console.log("Shape Drawn:", overlay);
+  });
+});
+
+// 드로잉 모드 설정
+const setDrawingMode = (mode) => {
+  console.log(`Setting drawing mode to: ${mode}`);
+  const modeMap = {
+    rectangle: naver.maps.drawing.OverlayType.RECTANGLE,
+    circle: naver.maps.drawing.OverlayType.CIRCLE,
+    polygon: naver.maps.drawing.OverlayType.POLYGON,
+  };
+
+  if (!drawingManager) {
+    console.error("DrawingManager is not initialized");
+    return;
+  }
+
+  drawingManager.setDrawingMode(modeMap[mode]);
+  console.log(`Drawing mode set: ${mode}`);
 };
 
-const addMarker = () => {
-    const marker = new naver.maps.Marker({
-        position: map.value.getCenter(),
-        map: map.value,
-    });
-    markers.value.push({
-        type: "treasure",
-        contentText: "",
-        isVisible: true,
-        viewCount: 0,
-        latLng: marker.getPosition(),
-    });
-};
+// 선택 완료 버튼 클릭
+const confirmSelection = () => {
+  if (!selectedShape.value) {
+    alert("Please draw a shape on the map first.");
+    return;
+  }
 
-const saveShape = () => {
-    console.log("Selected Shape:", selectedShape.value);
-};
+  let scopeData = null;
 
-const createGame = () => {
-    console.log("Game Data:", {
-        rangeType: selectedRange.value,
-        shapeData: selectedShape.value,
-        markers: markers.value,
-        maxParticipants: maxParticipants.value,
-        timeLimit: timeLimit.value,
-        announcement: announcement.value,
-    });
-};
+  // 도형 정보 구성
+  if (selectedShape.value instanceof naver.maps.Rectangle) {
+    scopeData = {
+      type: "rectangle",
+      bounds: selectedShape.value.getBounds().toJSON(),
+    };
+  } else if (selectedShape.value instanceof naver.maps.Circle) {
+    scopeData = {
+      type: "circle",
+      center: selectedShape.value.getCenter().toJSON(),
+      radius: selectedShape.value.getRadius(),
+    };
+  } else if (selectedShape.value instanceof naver.maps.Polygon) {
+    scopeData = {
+      type: "polygon",
+      paths: selectedShape.value
+        .getPaths()
+        .getArray()
+        .map((path) => path.toJSON()),
+    };
+  }
 
-onMounted(() => initializeMap());
+  console.log("Selected Shape:", scopeData);
+  emit("save-scope", scopeData); // 부모 컴포넌트로 데이터 전달
+};
 </script>
 
 <style scoped>
 .create-game-container {
-    background: linear-gradient(to bottom, white 70%, #a1834a);
-    min-height: 100vh;
-    padding: 20px;
+  background: linear-gradient(to bottom, white 60%, #a1834a);
+  min-height: 100vh;
+  padding: 20px;
 }
 
-.map {
-    height: 500px;
-    border: 2px solid #795013;
-    border-radius: 8px;
+.map-container {
+  width: 100%;
+  height: 500px;
+  border: 2px solid #795013;
+  border-radius: 8px;
 }
 
-h2,
-h3 {
-    color: #795013;
+.title {
+  color: #795013;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
 }
 
-.active-chip {
-    background-color: #795013 !important;
-    color: white !important;
+.setting-row {
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 </style>
